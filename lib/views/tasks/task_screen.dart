@@ -7,6 +7,9 @@ import 'package:todo/models/task_model.dart';
 import 'package:todo/utils/app_colors.dart';
 import 'package:todo/utils/app_strings.dart';
 import 'package:todo/utils/constants.dart';
+import 'package:todo/views/tasks/components/custom_textfield.dart';
+import 'package:todo/views/tasks/components/tasktile.dart';
+import 'package:todo/views/tasks/components/time_date_picker.dart';
 import 'package:todo/views/tasks/widgets/task_screen_appbar.dart';
 
 class TaskScreen extends StatefulWidget {
@@ -81,8 +84,10 @@ class _TaskScreenState extends State<TaskScreen> {
         widget.titleTextController?.text = title;
         widget.descriptionTextController?.text = subTitle;
         widget.task?.save();
+        Navigator.pop(context);
       } catch (e) {
         updateTaskWarning(context);
+        Navigator.pop(context);
       }
     } else {
       if (title != null && subTitle != null) {
@@ -92,6 +97,7 @@ class _TaskScreenState extends State<TaskScreen> {
             createdAtDate: date,
             createdAtTime: time);
         BaseWidget.of(context).dataStore.addTask(task: task);
+        Navigator.pop(context);
       } else {
         emptyWarning(context);
       }
@@ -108,109 +114,143 @@ class _TaskScreenState extends State<TaskScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
       child: Scaffold(
+        backgroundColor: Colors.grey.shade300,
         appBar: const TaskScreenAppbar(),
         body: SizedBox(
           height: size.height,
           width: size.width,
-          child: Column(
-            children: [
-              h20,
-              TaskTitle(
-                size: size,
-                isupdate: isTaskAlreadyExists(),
-              ),
-              h20,
-              CustomTextField(
-                onChanged: (String inputTitle) {
-                  title = inputTitle;
-                },
-                onFieldSubmitted: (String inputTitle) {
-                  title = inputTitle;
-                },
-                size: size,
-                controller: widget.titleTextController,
-              ),
-              CustomTextField(
-                onChanged: (String inputSubTitle) {
-                  subTitle = inputSubTitle;
-                },
-                onFieldSubmitted: (String inputSubTitle) {
-                  subTitle = inputSubTitle;
-                },
-                size: size,
-                controller: widget.descriptionTextController,
-                isDescription: true,
-              ),
-              h20,
-              TimepickerWidget(
-                time: showTime(time),
-                title: AppStrings.timeString,
-                size: size,
-                onTap: () => showModalBottomSheet(
-                  backgroundColor: AppColors.white,
-                  context: context,
-                  builder: (context) {
-                    return SizedBox(
-                      width: size.width,
-                      height: 280,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            h10,
-                            TimePickerWidget(
-                              initDateTime: showDateAsDateTime(time),
-                              dateFormat: 'HH:mm',
-                              pickerTheme: const DateTimePickerTheme(
-                                  itemHeight: 60,
-                                  cancelTextStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: AppColors.grey),
-                                  itemTextStyle: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.black),
-                                  confirmTextStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: AppColors.primarycolor)),
-                              onChange: (dateTime, _) {},
-                              onConfirm: (dateTime, _) {
-                                setState(() {
-                                  if (widget.task?.createdAtTime == null) {
-                                    time = dateTime;
-                                  } else {
-                                    widget.task!.createdAtTime = dateTime;
-                                  }
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                h20,
+                TaskTitle(
+                  size: size,
+                  isupdate: isTaskAlreadyExists(),
                 ),
-              ),
-              TimepickerWidget(
-                time: showDate(date),
-                title: AppStrings.dateString,
-                size: size,
-                onTap: () => showModalBottomSheet(
-                  backgroundColor: AppColors.white,
-                  context: context,
-                  builder: (context) {
-                    return SizedBox(
-                      width: size.width,
-                      height: 280,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            h10,
-                            DatePickerWidget(
-                                initialDateTime: showDateAsDateTime(date),
-                                onChange: (dateTime, selectedIndex) {},
+                h20,
+                const Padding(
+                  padding: EdgeInsets.only(left: 25.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Title',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                    ),
+                  ),
+                ),
+                CustomTextField(
+                  onChanged: (String inputTitle) {
+                    title = inputTitle;
+                  },
+                  onFieldSubmitted: (String inputTitle) {
+                    title = inputTitle;
+                  },
+                  size: size,
+                  controller: widget.titleTextController,
+                ),
+                h10,
+                const Padding(
+                  padding: EdgeInsets.only(left: 25.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Description',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                    ),
+                  ),
+                ),
+                CustomTextField(
+                  onChanged: (String inputSubTitle) {
+                    subTitle = inputSubTitle;
+                  },
+                  onFieldSubmitted: (String inputSubTitle) {
+                    subTitle = inputSubTitle;
+                  },
+                  size: size,
+                  controller: widget.descriptionTextController,
+                  isDescription: true,
+                ),
+                h40,
+                TimepickerWidget(
+                  time: showTime(time),
+                  title: AppStrings.timeString,
+                  size: size,
+                  onTap: () => showModalBottomSheet(
+                    backgroundColor: AppColors.white,
+                    context: context,
+                    builder: (context) {
+                      return SizedBox(
+                        width: size.width,
+                        height: 280,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              h10,
+                              TimePickerWidget(
+                                initDateTime: time ?? DateTime.now(),
+                                dateFormat: 'HH:mm',
+                                pickerTheme: DateTimePickerTheme(
+                                    itemHeight: 60,
+                                    cancelTextStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.grey.shade600),
+                                    itemTextStyle: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.black),
+                                    confirmTextStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: AppColors.primarycolor)),
+                                onChange: (dateTime, _) {
+                                  setState(() {
+                                    time = dateTime;
+                                  });
+                                },
+                                onConfirm: (dateTime, _) {
+                                  setState(() {
+                                    if (widget.task?.createdAtTime == null) {
+                                      time = dateTime;
+                                    } else {
+                                      widget.task!.createdAtTime = dateTime;
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                h40,
+                TimepickerWidget(
+                  time: showDate(date),
+                  title: AppStrings.dateString,
+                  size: size,
+                  onTap: () => showModalBottomSheet(
+                    backgroundColor: AppColors.white,
+                    context: context,
+                    builder: (context) {
+                      return SizedBox(
+                        width: size.width,
+                        height: 280,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              h10,
+                              DatePickerWidget(
+                                initialDateTime: date ?? DateTime.now(),
+                                onChange: (dateTime, selectedIndex) {
+                                  setState(() {
+                                    date = dateTime;
+                                  });
+                                },
                                 onConfirm: (dateTime, _) {
                                   setState(() {
                                     if (widget.task?.createdAtDate == null) {
@@ -221,242 +261,133 @@ class _TaskScreenState extends State<TaskScreen> {
                                   });
                                 },
                                 minDateTime: DateTime.now(),
-                                pickerTheme: const DateTimePickerTheme(
-                                    itemHeight: 60,
-                                    cancelTextStyle: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppColors.grey),
-                                    itemTextStyle: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.black),
-                                    confirmTextStyle: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: AppColors.primarycolor)))
-                          ],
+                                pickerTheme: DateTimePickerTheme(
+                                  itemHeight: 60,
+                                  cancelTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  itemTextStyle: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.black,
+                                  ),
+                                  confirmTextStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: AppColors.primarycolor,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              h20,
-              Row(
-                mainAxisAlignment: isTaskAlreadyExists()
-                    ? MainAxisAlignment.spaceEvenly
-                    : MainAxisAlignment.center,
-                children: [
-                  !isTaskAlreadyExists()
-                      ? SizedBox(
-                          width: 122,
-                          child: MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
+                h40,
+                Row(
+                  mainAxisAlignment: isTaskAlreadyExists()
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.spaceEvenly,
+                  children: [
+                    !isTaskAlreadyExists()
+                        ? GestureDetector(
+                            onTap: () {
+                              deleteTask();
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurStyle: BlurStyle.normal,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.grey.shade500
+                                          : Colors.transparent,
+                                      offset: const Offset(6.0, 6.0),
+                                      blurRadius: 20.0,
+                                      spreadRadius: 5.0,
+                                    ),
+                                    BoxShadow(
+                                      blurStyle: BlurStyle.normal,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                      offset: const Offset(-6.0, -6.0),
+                                      blurRadius: 20.0,
+                                      spreadRadius: 5.0,
+                                    ),
+                                  ],
+                                  color: Colors.grey.shade300),
+                              width: 150,
                               height: 50,
-                              minWidth: 120,
-                              color: AppColors.primarycolor,
                               child: Center(
                                 child: Text(
                                   'Delete Task',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                      fontSize: 17),
                                 ),
                               ),
-                              onPressed: () {
-                                deleteTask();
-                                Navigator.pop(context);
-                              }),
-                        )
-                      : SizedBox(),
-                  SizedBox(
-                    width: 122,
-                    child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            ),
+                          )
+                        : const SizedBox(),
+                    GestureDetector(
+                      onTap: () {
+                        isTaskAlreadyExitsOtherwiseCreate();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                blurStyle: BlurStyle.normal,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.grey.shade500
+                                    : Colors.transparent,
+                                offset: const Offset(6.0, 6.0),
+                                blurRadius: 20.0,
+                                spreadRadius: 5.0,
+                              ),
+                              BoxShadow(
+                                blurStyle: BlurStyle.normal,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                offset: const Offset(-6.0, -6.0),
+                                blurRadius: 20.0,
+                                spreadRadius: 5.0,
+                              ),
+                            ],
+                            color: Colors.grey.shade300),
+                        width: 150,
                         height: 50,
-                        minWidth: 120,
-                        color: AppColors.primarycolor,
                         child: Center(
                           child: Text(
                             !isTaskAlreadyExists() ? 'Update Task' : 'Add Task',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                fontSize: 17),
                           ),
                         ),
-                        onPressed: () {
-                          isTaskAlreadyExitsOtherwiseCreate();
-                          Navigator.pop(context);
-                        }),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TimepickerWidget extends StatelessWidget {
-  const TimepickerWidget({
-    super.key,
-    required this.size,
-    required this.onTap,
-    required this.title,
-    required this.time,
-  });
-  final String title;
-  final VoidCallback onTap;
-  final Size size;
-  final String time;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Container(
-          padding: const EdgeInsets.only(left: 10, right: 8),
-          width: size.width,
-          height: 55,
-          decoration: BoxDecoration(
-              border: Border.all(color: AppColors.grey),
-              borderRadius: BorderRadius.circular(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w500, color: AppColors.grey),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 35,
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 219, 215, 215),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Text(
-                    time,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.black),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  const CustomTextField(
-      {super.key,
-      required this.size,
-      required this.controller,
-      this.isDescription = false,
-      required this.onFieldSubmitted,
-      required this.onChanged});
-
-  final Size size;
-  final TextEditingController? controller;
-  final bool isDescription;
-  final Function(String)? onFieldSubmitted;
-  final Function(String)? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ListTile(
-        title: TextFormField(
-          cursorHeight: isDescription ? 20 : 40,
-          cursorColor: AppColors.primarycolor,
-          cursorWidth: 2,
-          controller: controller,
-          onFieldSubmitted: onFieldSubmitted,
-          onChanged: onChanged,
-          maxLines: isDescription ? 2 : 4,
-          minLines: 1,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: !isDescription ? size.width * .06 : 15,
-              decoration: TextDecoration.none),
-          decoration: InputDecoration(
-            prefixIcon: isDescription
-                ? const Icon(
-                    Icons.bookmark_border_outlined,
-                    color: AppColors.primarycolor,
-                  )
-                : null,
-            contentPadding: EdgeInsets.only(left: isDescription ? 0 : 10),
-            hintText: isDescription ? 'Add description' : 'Add Title..',
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.grey),
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.primarycolor, width: 2),
-            ),
-            border: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.primarycolor),
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class TaskTitle extends StatelessWidget {
-  const TaskTitle({super.key, required this.size, required this.isupdate});
-
-  final Size size;
-  final bool isupdate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: size.width * .2,
-              child: const Divider(),
-            ),
-            RichText(
-              text: TextSpan(
-                  text:
-                      ' ${isupdate ? AppStrings.addNewTask : AppStrings.updateTaskString} ',
-                  style: TextStyle(
-                      color: AppColors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: size.width * .06),
-                  children: [
-                    TextSpan(
-                        text: '${AppStrings.taskText} ',
-                        style: TextStyle(
-                            color: AppColors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: size.width * .06))
-                  ]),
-            ),
-            SizedBox(
-              width: size.width * .2,
-              child: const Divider(),
-            )
-          ],
-        ),
-        h10,
-        const Text(
-          AppStrings.titleTextField,
-          style: TextStyle(fontSize: 14, color: AppColors.primarycolor),
-        ),
-      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo/utils/app_colors.dart';
 import 'package:todo/utils/constants.dart';
 
@@ -15,7 +16,7 @@ class CustomSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 80),
+      padding: const EdgeInsets.symmetric(vertical: 80),
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -23,14 +24,14 @@ class CustomSlider extends StatelessWidget {
               colors: AppColors.primaryGradientColor)),
       child: Column(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 50,
             backgroundImage: NetworkImage(
                 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png'),
           ),
           h10,
-          Text(
-            'UserName',
+          const Text(
+            'Todo ver 1.0.0',
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 18,
@@ -43,9 +44,27 @@ class CustomSlider extends StatelessWidget {
               itemCount: iconList.length,
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (index == 2) {
+                      showAboutDialog(
+                          applicationVersion: '1.0.0',
+                          children: [
+                            const Text(
+                                'This ToDo app is made to help people assign tasks and achieve them.\nIt uses Hive database for storing data.The key to success is to start before you are ready.')
+                          ],
+                          context: context,
+                          barrierColor: Colors.black.withOpacity(.5),
+                          applicationIcon: Image.asset(
+                            'assets/logo.png',
+                            width: 50,
+                          ));
+                    }
+                    if (index == 3) {
+                      SystemNavigator.pop();
+                    }
+                  },
                   child: Container(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     child: ListTile(
                       leading: Icon(
                         iconList[index],
@@ -53,7 +72,7 @@ class CustomSlider extends StatelessWidget {
                       ),
                       title: Text(
                         textList[index],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             color: AppColors.white),
                       ),

@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     final base = BaseWidget.of(context);
     final Size size = MediaQuery.of(context).size;
     return ValueListenableBuilder(
@@ -51,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
           task.sort((a, b) => a.createdAtDate.compareTo(b.createdAtDate));
           return SafeArea(
             child: Scaffold(
+              backgroundColor: Colors.grey[300],
               body: SliderDrawer(
                   key: drawerkey,
                   isDraggable: false,
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   appBar: HomeAppbar(
                     drawerkey: drawerkey,
                   ),
-                  slider: CustomSlider(),
+                  slider: const CustomSlider(),
                   child: homeBody(size, base, task)),
               floatingActionButton: const FloatingButton(),
             ),
@@ -72,43 +72,55 @@ class _HomeScreenState extends State<HomeScreen> {
       width: size.width,
       child: Column(
         children: [
-          SizedBox(
-            height: 100,
-            width: size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: CircularProgressIndicator(
-                    value: checkDoneTask(tasks) / valueOfIndicator(tasks),
-                    backgroundColor: AppColors.grey,
-                    valueColor: AlwaysStoppedAnimation(AppColors.primarycolor),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(width: 3, color: Colors.grey.shade300)),
+              height: 100,
+              width: size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          AppStrings.mainTitle,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${checkDoneTask(tasks)} of ${tasks.length} Tasks',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey.shade600),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                w20,
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppStrings.mainTitle,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        value: checkDoneTask(tasks) / valueOfIndicator(tasks),
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: const AlwaysStoppedAnimation(
+                            AppColors.primarycolor),
                       ),
                     ),
-                    Text(
-                      '${checkDoneTask(tasks)} of ${tasks.length} Tasks',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.grey),
-                    )
-                  ],
-                )
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
           const Padding(
@@ -141,14 +153,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(
                                   Icons.delete,
-                                  color: AppColors.red.withOpacity(.7),
+                                  color: AppColors.red.withOpacity(.9),
                                   size: 30,
                                 ),
                                 Text(
                                   AppStrings.deletedTask,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: AppColors.black.withOpacity(.7)),
+                                      color: Colors.grey.shade600),
                                 )
                               ],
                             ),
@@ -161,14 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        FadeIn(
-                          animate: tasks.isNotEmpty ? false : true,
-                          child: Image.asset(
-                            notaskFound,
-                            width: size.width * .6,
-                          ),
+                        Image.asset(
+                          notaskFound,
+                          width: size.width * .7,
                         ),
-                        h20,
                         FadeInUp(
                           from: 30,
                           child: const Text(

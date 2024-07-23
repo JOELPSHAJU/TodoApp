@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primarycolor = Colors.teal;
+  static const Color primarycolor = Colors.blue;
   static List<Color> primaryGradientColor = [
-    Colors.teal.shade600,
-    Colors.teal.shade300
+    Colors.blue.shade900,
+    Colors.blue.shade300
   ];
-    static List<Color> tilegradientdone = [
-    Colors.teal.shade600,
-    Colors.teal.shade800
+  static List<Color> tilegradientdone = [
+    Colors.blue.shade600,
+    Colors.blue.shade900
   ];
-    static List<Color> tilegradientwhite = [
-    Colors.white,
-    Colors.white
+  static List<Color> tilegradientwhite = [
+    Colors.grey.shade300,
+    Colors.grey.shade300
   ];
   static const Color white = Colors.white;
   static const Color grey = Color.fromARGB(255, 171, 167, 167);

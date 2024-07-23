@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:intl/intl.dart';
 import 'package:todo/main.dart';
+import 'package:todo/utils/app_colors.dart';
 import 'package:todo/utils/constants.dart';
 
 class HomeAppbar extends StatefulWidget {
@@ -46,6 +48,13 @@ class _HomeAppbarState extends State<HomeAppbar>
     });
   }
 
+  String getTodaysWeekday() {
+    DateTime now = DateTime.now();
+    DateFormat formatter =
+        DateFormat('EEEE'); 
+    return formatter.format(now);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -63,8 +72,16 @@ class _HomeAppbarState extends State<HomeAppbar>
               icon: AnimatedIcon(
                 size: 30,
                 icon: AnimatedIcons.menu_close,
+                color: AppColors.black,
                 progress: animationController,
               ),
+            ),
+            Text(
+              getTodaysWeekday(),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: AppColors.grey),
             ),
             IconButton(
               onPressed: () {
@@ -75,6 +92,7 @@ class _HomeAppbarState extends State<HomeAppbar>
               icon: Icon(
                 CupertinoIcons.trash_fill,
                 size: 30,
+                color: AppColors.black,
               ),
             ),
           ],

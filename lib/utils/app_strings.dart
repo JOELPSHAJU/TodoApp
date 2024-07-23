@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
+
 class AppStrings {
-  static const String mainTitle = 'My Tasks';
+  static const String mainTitle = 'Task Progress';
   static const String deletedTask = 'This task was deleted';
   static const String doneAllTask = 'You Have Done All Tasks!👌';
   static const String addNewTask = 'Add New';

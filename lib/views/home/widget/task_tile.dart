@@ -48,18 +48,50 @@ class _TaskTileState extends State<TaskTile> {
                     task: widget.task)));
       },
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.only(bottom: 10.0, left: 10),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 600),
           decoration: BoxDecoration(
               boxShadow: widget.task.isCompleted
-                  ? null
+                  ? [
+                      BoxShadow(
+                        blurStyle: BlurStyle.normal,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.grey.shade500
+                            : Colors.transparent,
+                        offset: const Offset(6.0, 3.0),
+                        blurRadius: 20.0,
+                        spreadRadius: 5.0,
+                      ),
+                      BoxShadow(
+                        blurStyle: BlurStyle.normal,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.transparent,
+                        offset: const Offset(-6.0, -3.0),
+                        blurRadius: 20.0,
+                        spreadRadius: 5.0,
+                      ),
+                    ]
                   : [
                       BoxShadow(
-                        spreadRadius: 10,
-                        color: Color.fromARGB(255, 225, 225, 225),
-                        blurRadius: 15,
-                      )
+                        blurStyle: BlurStyle.normal,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.grey.shade500
+                            : Colors.transparent,
+                        offset: const Offset(6.0, 6.0),
+                        blurRadius: 20.0,
+                        spreadRadius: 5.0,
+                      ),
+                      BoxShadow(
+                        blurStyle: BlurStyle.normal,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.transparent,
+                        offset: const Offset(-6.0, -6.0),
+                        blurRadius: 20.0,
+                        spreadRadius: 5.0,
+                      ),
                     ],
               borderRadius: BorderRadius.circular(8),
               gradient: widget.task.isCompleted
@@ -77,7 +109,7 @@ class _TaskTileState extends State<TaskTile> {
                 decoration: BoxDecoration(
                     color: widget.task.isCompleted
                         ? Colors.transparent
-                        : AppColors.white,
+                        : Colors.grey.shade300,
                     shape: BoxShape.circle,
                     border: Border.all(
                         color: widget.task.isCompleted
@@ -118,7 +150,7 @@ class _TaskTileState extends State<TaskTile> {
                       fontWeight: FontWeight.w400,
                       color: widget.task.isCompleted
                           ? AppColors.white
-                          : AppColors.grey),
+                          : Colors.grey.shade600),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
@@ -131,16 +163,16 @@ class _TaskTileState extends State<TaskTile> {
                             fontWeight: FontWeight.bold,
                             color: widget.task.isCompleted
                                 ? AppColors.white
-                                : Colors.grey,
+                                : Colors.grey.shade600,
                             fontSize: 14),
                       ),
                       Text(
-                        DateFormat.yMMMEd().format(widget.task.createdAtTime),
+                        DateFormat.yMMMEd().format(widget.task.createdAtDate),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: widget.task.isCompleted
                                 ? AppColors.white
-                                : Colors.grey,
+                                : Colors.grey.shade600,
                             fontSize: 14),
                       )
                     ],
